@@ -1,0 +1,64 @@
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: vllm-server
+
+spec:
+  replicas: 1
+
+  selector:
+    matchLabels:
+      app: vllm-server
+
+  template:
+    metadata:
+      labels:
+        app: vllm-server
+
+    spec:
+      nodeSelector:
+        cloud.google.com/gke-accelerator: nvidia-l4 #nvidia-l4
+
+      containers:
+      - name: vllm
+      
+        image: vllm/vllm-openai:latest
+        imagePullPolicy: IfNotPresent
+
+        command:
+        - bash
+        - -c
+
+        env: 
+        - name: LD_LIBRARY_PATH
+          value: "/usr/local/nvidia/lib64"
+         
+        - name: MODEL_NAME
+          value: ${MODEL_NAME}
+    
+        - name: ENABLED_CHUNKED_PREFILL
+          value: ${ENABLED_CHUNKED_PREFILL}
+          
+        args:
+        - >
+          vllm serve ${MODEL_NAME}
+          --host 0.0.0.0
+          --port 8000
+          --gpu-memory-utilization 0.95
+          ${ENABLED_CHUNKED_PREFILL}
+
+        ports:
+        - containerPort: 8000
+          name: http
+
+        resources:
+          requests:
+            cpu: "8"
+            memory: "32Gi"
+            nvidia.com/gpu: "1"
+
+          limits:
+            cpu: "8"
+            memory: "32Gi"
+            nvidia.com/gpu: "1"
