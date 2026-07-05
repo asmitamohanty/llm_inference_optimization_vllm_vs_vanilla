@@ -57,3 +57,31 @@ ENDPOINT=<EXTERNAL-IP> python benchmark.py --backend <backend-type> --dataset-ch
 ```
 
 ## Results
+
+### Request Sweep
+| Metric| Results|
+|:------:|:-------:|
+|Avg ITL|            |
+|Tail/P99 Latency|          |
+|Aggregate Throughput|             |
+|TTFT|    |
+
+
+### Mixed Context Sweep
+| Metric| Results|
+|:------:|:-------:|
+|Avg ITL|              |
+|Tail/P99 Latency|          |
+|Aggregate Throughput|             |
+|TTFT|    |
+
+### Context Sweep
+| Metric| Results|
+|:------:|:-------:|
+|Latency|          |
+|TTFT|             |
+|Throughput|       |
+
+## Summary
+- vLLM outperforms vanilla transformer under high concurrent loads by roughly 11x higher in throughput & 26x lower in ITL. vLLM is trading TTFT for ITL — the whole point of chunked prefill is to sacrifice some TTFT to protect ITL for in-flight requests
+- 
