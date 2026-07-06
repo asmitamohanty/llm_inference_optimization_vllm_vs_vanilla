@@ -48,6 +48,7 @@ ENDPOINT=<EXTERNAL-IP> python benchmark.py --backend <backend-type> --dataset-ch
 
 <details>
   <summary><strong>Request Sweep</strong></summary>
+  
  - All measurements are taken under batch size=1, context length=512 & max-new-tokens=128
   
 | Metric| Results|
@@ -61,6 +62,7 @@ ENDPOINT=<EXTERNAL-IP> python benchmark.py --backend <backend-type> --dataset-ch
 
 <details>
   <summary><strong>Context Sweep</strong></summary>
+  
   - All measurements are taken under batch size=1 & max-new-tokens=128 under low concurrency
   
 | Metric| Results|
@@ -74,6 +76,7 @@ ENDPOINT=<EXTERNAL-IP> python benchmark.py --backend <backend-type> --dataset-ch
 
 <details>
   <summary><strong>Mixed Context Sweep</strong></summary>
+  
   - All measurements are taken under max-new-tokens=128 & max-num-batched-tokens=4096 (chunk size) simulating batch size with mixed contexts
 
 **(a) vLLM - With vs Without Chunked Prefill**
@@ -85,6 +88,8 @@ ENDPOINT=<EXTERNAL-IP> python benchmark.py --backend <backend-type> --dataset-ch
 |TTFT|    |
 
 **(b) vLLM With Chunked Prefill: Sweep Chunk Size aka max-num-batched-tokens**
+- Best Chunk Size found at: max-num-batched-tokens=4096
+  
 | Metric| Results|
 |:------:|:-------:|
 |Avg ITL|              |
@@ -95,10 +100,13 @@ ENDPOINT=<EXTERNAL-IP> python benchmark.py --backend <backend-type> --dataset-ch
 
 ## Summary
 - vLLM outperforms vanilla transformer under high concurrent loads by roughly **11x** higher in throughput, with **345x** gains at highest concurreny load of 50 & **26x** lower in ITL, sacrificing some TTFT to protect ITL for in-flight requests.
-- For low concurrency, batch size=1 & varying context lengths, vLLM's 8% decoding efficiency is eclipsed by 12-78% scheduling overhead compared to vanilla transformer. This is expected from vLLM's architecture which is designed to benefit in maximum throughput at high concurrency.
+- For low concurrency, batch size=1 & varying context lengths, vLLM's **8%** decoding efficiency is eclipsed by **12-78%** scheduling overhead compared to vanilla transformer. This is expected from vLLM's architecture which is designed to benefit in maximum throughput at high concurrency.
 - Under mixed context loads in a given batch size:
-  (a) With vs Without Chunked Prefill: vLLM shows comparable performance in almost every metric except the tail latency showing 8% drop. Root cause is due to the addition of scheduling steps when context length > chunk size.
+
+  (a) With vs Without Chunked Prefill: vLLM shows comparable performance in almost every metric except the tail latency showing **8%** drop. Root cause is due to the addition of scheduling steps when context length > chunk size.
+  
   (b) Sweeping chunk size (max-num-batched-tokens) with chunked prefill: Higher chunk size shows improved performance in all the metrics due to reducing scheduling overhead/steps for larger contexts.
+
   - The above data shows that under mixed context loads for a single GPU, the real lever is the chunk size that drives the performance. 
 
     
