@@ -96,7 +96,7 @@ ENDPOINT=<EXTERNAL-IP> python benchmark.py --backend <backend-type> --dataset-ch
 |:------:|:-------:|
 |Avg ITL|  <img src="plots/mixed/mixed_avg_itl_sec.png" width="200">          |
 |Tail/P99 Latency|  <img src="plots/mixed/mixed_p99_latency_sec.png" width="200">        |
-|Aggregate Throughput|   <img src="plots/mixed/mixed_avg_tps.png" width="200">          |
+|Avg Throughput|   <img src="plots/mixed/mixed_avg_tps.png" width="200">          |
 |Avg TTFT| <img src="plots/mixed/mixed_avg_ttft_sec.png" width="200">   |
 
 
@@ -107,7 +107,7 @@ ENDPOINT=<EXTERNAL-IP> python benchmark.py --backend <backend-type> --dataset-ch
 |:------:|:-------:|
 |Avg ITL|  <img src="plots/mixed_batched_tokens/mixed_avg_itl_sec.png" width="200">          |
 |Tail/P99 Latency|  <img src="plots/mixed_batched_tokens/mixed_p99_latency_sec.png" width="200">        |
-|Aggregate Throughput|   <img src="plots/mixed_batched_tokens/mixed_avg_tps.png" width="200">          |
+|Avg Throughput|   <img src="plots/mixed_batched_tokens/mixed_avg_tps.png" width="200">          |
 |Avg TTFT| <img src="plots/mixed_batched_tokens/mixed_avg_ttft_sec.png" width="200">   |
 </details>
 
