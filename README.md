@@ -6,9 +6,9 @@ This project benchmarks vanilla Hugging Face Transformers against vLLM on Google
 
 The benchmark suite measures:
 
-- `Context Sweep` – varying prompt length. Benchmark flag - `--context-sweep`
-- `Request Sweep` – varying concurrent requests. Benchmark flag - `--request-sweep`
-- `Mixed Context Sweep` – simultaneous heterogeneous prompt lengths. Benchmark flag - `--mixed-context-sweep`
+- `Context Sweep` – varying prompt length under low concurrency. 
+- `Request Sweep` – varying concurrent requests under high concurrency. 
+- `Mixed Context Sweep` – simultaneous heterogeneous prompt lengths comparing vLLM with vs without chunked prefill.
 
 ### Stack
 - Python
@@ -16,23 +16,10 @@ The benchmark suite measures:
 - Hugging Face Transformers - Qwen2.5-7B-Instruct
 - vLLM
 - Kubernetes (GKE)
-- NVIDIA L4 GPU
+- NVIDIA L4 GPU (Single GPU)
 - Prometheus + DCGM Exporter
 - Matplotlib
 - Dataset - HotPotQA
-
-### Metrics
-Each benchmark records:
-- End-to-end latency
-- TTFT (Time To First Token)
-- Average ITL (Inter-Token Latency)
-- P99 ITL
-- Decode throughput (tokens/sec)
-- Aggregate throughput
-- Prompt generation overhead
-- GPU utilization (DCGM)
-- Prompt length
-- Output length
 
 ## Quickstart
 - Setup environment & GCP project zones/regions/services
@@ -57,8 +44,12 @@ ENDPOINT=<EXTERNAL-IP> python benchmark.py --backend <backend-type> --dataset-ch
 ```
 
 ## Results
+- Given model config & hardware constraints support the default `max_model_len=32768` in vLLM
 
-### Request Sweep
+<details>
+  <summary><strong>Request Sweep</strong></summary>
+ - All measurements are taken under batch size=1, context length=512 & max-new-tokens=128
+  
 | Metric| Results|
 |:------:|:-------:|
 |Avg ITL|            |
@@ -66,8 +57,26 @@ ENDPOINT=<EXTERNAL-IP> python benchmark.py --backend <backend-type> --dataset-ch
 |Aggregate Throughput|             |
 |TTFT|    |
 
+</details>
 
-### Mixed Context Sweep
+<details>
+  <summary><strong>Context Sweep</strong></summary>
+  - All measurements are taken under batch size=1 & max-new-tokens=128 under low concurrency
+  
+| Metric| Results|
+|:------:|:-------:|
+|Latency|          |
+|TTFT|             |
+|Throughput|       |
+
+</details>
+
+
+<details>
+  <summary><strong>Mixed Context Sweep</strong></summary>
+  - All measurements are taken under max-new-tokens=128 & max-num-batched-tokens=4096 (chunk size) simulating batch size with mixed contexts
+
+**(a) vLLM - With vs Without Chunked Prefill**
 | Metric| Results|
 |:------:|:-------:|
 |Avg ITL|              |
@@ -75,13 +84,21 @@ ENDPOINT=<EXTERNAL-IP> python benchmark.py --backend <backend-type> --dataset-ch
 |Aggregate Throughput|             |
 |TTFT|    |
 
-### Context Sweep
+**(b) vLLM With Chunked Prefill: Sweep Chunk Size aka max-num-batched-tokens**
 | Metric| Results|
 |:------:|:-------:|
-|Latency|          |
-|TTFT|             |
-|Throughput|       |
+|Avg ITL|              |
+|Tail/P99 Latency|          |
+|Aggregate Throughput|             |
+|TTFT|    |
+</details>
 
 ## Summary
-- vLLM outperforms vanilla transformer under high concurrent loads by roughly 11x higher in throughput & 26x lower in ITL. vLLM is trading TTFT for ITL — the whole point of chunked prefill is to sacrifice some TTFT to protect ITL for in-flight requests
-- 
+- vLLM outperforms vanilla transformer under high concurrent loads by roughly **11x** higher in throughput, with **345x** gains at highest concurreny load of 50 & **26x** lower in ITL, sacrificing some TTFT to protect ITL for in-flight requests.
+- For low concurrency, batch size=1 & varying context lengths, vLLM's 8% decoding efficiency is eclipsed by 12-78% scheduling overhead compared to vanilla transformer. This is expected from vLLM's architecture which is designed to benefit in maximum throughput at high concurrency.
+- Under mixed context loads in a given batch size:
+  (a) With vs Without Chunked Prefill: vLLM shows comparable performance in almost every metric except the tail latency showing 8% drop. Root cause is due to the addition of scheduling steps when context length > chunk size.
+  (b) Sweeping chunk size (max-num-batched-tokens) with chunked prefill: Higher chunk size shows improved performance in all the metrics due to reducing scheduling overhead/steps for larger contexts.
+  - The above data shows that under mixed context loads for a single GPU, the real lever is the chunk size that drives the performance. 
+
+    
