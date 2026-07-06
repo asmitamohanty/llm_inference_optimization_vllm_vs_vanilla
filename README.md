@@ -13,7 +13,7 @@ The benchmark suite measures:
 ### Stack
 - Python
 - FastAPI
-- Hugging Face Transformers - Qwen2.5-7B-Instruct
+- Hugging Face Transformers - [Qwen2.5-7B-Instruct](https://huggingface.co/Qwen/Qwen2.5-7B-Instruct)
 - vLLM
 - Kubernetes (GKE)
 - NVIDIA L4 GPU (Single GPU)
@@ -57,6 +57,7 @@ ENDPOINT=<EXTERNAL-IP> python benchmark.py --backend <backend-type> --dataset-ch
 
 ## Results
 - Given model config & hardware constraints support the default `max_model_len=32768` in vLLM
+- Detailed results of all metrics can be found in `final_outputs` 
 
 <details>
   <summary><strong>Request Sweep</strong></summary>
