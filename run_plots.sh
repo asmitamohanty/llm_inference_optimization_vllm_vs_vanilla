@@ -4,9 +4,9 @@ set -e
 source ./scripts/env.sh
 
 echo "Plotting results..."
-CSV1="/home/asmita_itspersonal/llm-gke-demo/results/final_outputs/vllm-chunk-ON/vllm_chunkEN_2048_mixed_context_sweep.csv"
-CSV2="/home/asmita_itspersonal/llm-gke-demo/results/final_outputs/vllm-chunk-ON/vllm_chunkEN_3072_mixed_context_sweep.csv"
-CSV3="/home/asmita_itspersonal/llm-gke-demo/results/final_outputs/vllm-chunk-ON/vllm_chunkEN_4096_31reqs_mixed_context_sweep.csv"
+CSV1="./final_outputs/vllm-chunk-ON/vllm_chunkEN_2048_mixed_context_sweep.csv"
+CSV2="./final_outputs/vllm-chunk-ON/vllm_chunkEN_3072_mixed_context_sweep.csv"
+CSV3="./final_outputs/vllm-chunk-ON/vllm_chunkEN_4096_31reqs_mixed_context_sweep.csv"
 
 python plot_benchmarks.py \
     --experiment mixed \
