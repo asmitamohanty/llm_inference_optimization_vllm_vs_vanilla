@@ -8,7 +8,7 @@ The benchmark suite measures:
 
 - `Context Sweep` – varying prompt length under low concurrency. 
 - `Request Sweep` – varying concurrent requests under high concurrency. 
-- `Mixed Context Sweep` – simultaneous heterogeneous prompt lengths comparing vLLM with vs without chunked prefill.
+- `Mixed Context Sweep` – simultaneous heterogeneous prompt lengths comparing vLLM with vs without chunked prefill & the performance impact due to different token budget with chunked prefill
 
 ### Stack
 - Python
