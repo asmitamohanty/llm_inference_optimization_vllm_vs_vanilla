@@ -22,6 +22,8 @@ The benchmark suite measures:
 - Dataset - HotPotQA
 
 ## Quickstart
+
+### Pre-Requisites (For GKE)
 - Setup environment & GCP project zones/regions/services
 ```
 source scripts/env.sh
@@ -31,14 +33,24 @@ bash scripts/setup.sh
 - Create 2 separate containers - `vllm-server` vs `llm-inference`
 - For each container, run the benchmark suite separately
 - For vLLM - set the `scripts/env.sh` to enable/disable `chunked-prefill` flag
+- For vanilla transformers: `BUILD -> DEPLOY`
+  ```
+  bash scripts/build_cloud.sh
+  bash scripts/deploy.sh
+  ```
+- For vLLM: `DEPLOY` . We are using the vLLM's openAI docker image
+  ```
+  bash scripts/deploy.sh vllm
+  ```
 
 ### Run Benchmark
 - Get your service endpoint once your pod is activated. Check `kubectl get pods -o wide`
 - Get your `EXTERNAL-IP` aka `ENDPOINT`. Check `kubectl get svc`
-- Run the following:
+- Add the following while running the benchmark script:
   - backend-type: `transformers` or `vllm`
   - benchmark-type: `context` or `request` or `mixed-context`
   - EXTERNAL-IP: Choose the address under the respective service - `llm-service` or `vllm-service`
+    
 ```
 ENDPOINT=<EXTERNAL-IP> python benchmark.py --backend <backend-type> --dataset-choice longbench --<benchmark-type>-sweep
 ```
