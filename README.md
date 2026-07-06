@@ -94,20 +94,21 @@ ENDPOINT=<EXTERNAL-IP> python benchmark.py --backend <backend-type> --dataset-ch
 **(a) vLLM - With vs Without Chunked Prefill**
 | Metric| Results|
 |:------:|:-------:|
-|Avg ITL|              |
-|Tail/P99 Latency|          |
-|Aggregate Throughput|             |
-|TTFT|    |
+|Avg ITL|  <img src="plots/mixed/mixed_avg_itl_sec.png" width="200">          |
+|Tail/P99 Latency|  <img src="plots/mixed/mixed_p99_latency_sec.png" width="200">        |
+|Aggregate Throughput|   <img src="plots/mixed/mixed_avg_tps.png" width="200">          |
+|Avg TTFT| <img src="plots/mixed/mixed_avg_ttft_sec.png" width="200">   |
+
 
 **(b) vLLM With Chunked Prefill: Sweep Chunk Size aka max-num-batched-tokens**
 - Best Chunk Size found at: max-num-batched-tokens=4096
   
 | Metric| Results|
 |:------:|:-------:|
-|Avg ITL|              |
-|Tail/P99 Latency|          |
-|Aggregate Throughput|             |
-|TTFT|    |
+|Avg ITL|  <img src="plots/mixed_batched_tokens/mixed_avg_itl_sec.png" width="200">          |
+|Tail/P99 Latency|  <img src="plots/mixed_batched_tokens/mixed_p99_latency_sec.png" width="200">        |
+|Aggregate Throughput|   <img src="plots/mixed_batched_tokens/mixed_avg_tps.png" width="200">          |
+|Avg TTFT| <img src="plots/mixed_batched_tokens/mixed_avg_ttft_sec.png" width="200">   |
 </details>
 
 ## Summary
