@@ -89,4 +89,3 @@ class PromptBuilder:
     
     def get_prompt(self, context_length, sample_index=None):
         return self.dataset.get_prompt(context_length, sample_index)
-
