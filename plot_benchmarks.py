@@ -211,8 +211,8 @@ def main():
         plot_request_metric(
             args.csv,
             args.labels,
-            "p95_latency_sec",
-            "P95 Latency (sec)",
+            "p99_latency_sec",
+            "P99 Latency (sec)",
             args.output_dir,
         )
 
@@ -266,7 +266,14 @@ def main():
             args.output_dir,
         )
 
+        plot_mixed_metric(
+            args.csv,
+            args.labels,
+            "p99_latency_sec",
+            "P99 Latency (sec)",
+            args.output_dir,
+        )
+
 
 if __name__ == "__main__":
     main()
-
