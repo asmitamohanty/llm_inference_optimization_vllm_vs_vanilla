@@ -65,10 +65,10 @@ ENDPOINT=<EXTERNAL-IP> python benchmark.py --backend <backend-type> --dataset-ch
   
 | Metric| Results|
 |:------:|:-------:|
-|Avg ITL|            |
-|Tail/P99 Latency|          |
-|Aggregate Throughput|             |
-|TTFT|    |
+|Avg ITL|  <img src="plots/request/request_avg_itl_sec.png" width="200">          |
+|Tail/P99 Latency|  <img src="plots/request/request_p99_latency_sec.png" width="200">        |
+|Aggregate Throughput|   <img src="plots/request/request_aggr_tps.png" width="200">          |
+|Avg TTFT| <img src="plots/request/request_avg_ttft_sec.png" width="200">   |
 
 </details>
 
@@ -79,9 +79,9 @@ ENDPOINT=<EXTERNAL-IP> python benchmark.py --backend <backend-type> --dataset-ch
   
 | Metric| Results|
 |:------:|:-------:|
-|Latency|  <img src="context/context_latency_sec.png" width="400">       |
-|TTFT|             |
-|Throughput|       |
+|Latency| <img src="plots/context/context_latency_sec.png" width="200">|
+|TTFT| <img src="plots/context/context_tokens_per_sec.png" width="200">            |
+|Throughput| <img src="plots/context/context_ttft_sec.png" width="200">      |
 
 </details>
 
