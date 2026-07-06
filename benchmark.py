@@ -11,6 +11,10 @@ from prompt_loader import PromptBuilder
 import json
 import random
 
+SEED = 42
+
+random.seed(SEED)
+np.random.seed(SEED)
 # --------------------------------------------------
 # Endpoint
 # --------------------------------------------------
@@ -24,6 +28,8 @@ print(f"Using endpoint: {ENDPOINT}")
 
 MODEL_NAME = os.getenv("MODEL_NAME", "Qwen/Qwen2.5-1.5B-Instruct")
 ENABLED_CHUNKED_PREFILL = os.getenv("ENABLED_CHUNKED_PREFILL", "")
+MAX_NUM_BATCHED_TOKENS = os.getenv("MAX_NUM_BATCHED_TOKENS", 0)
+
 DEFAULT_CTX_LEN = 512
 CONTEXTS = [
         128,
@@ -596,14 +602,32 @@ async def request_sweep():
         f"\nSaved: {args.output_csv}/{USE_VLLM}request_sweep.csv"
     )
 
+def generate_mixed_context_lengths(num_requests=25, long_ratio=0.2):
+    short = [128, 256, 512]
+    long  = [2048, 4096]    
+ 
+    n_long  = max(1, int(num_requests * long_ratio))  # ~5 long requests
+    n_short = num_requests - n_long                    # ~20 short requests
+
+    contexts = (
+        [random.choice(long)  for _ in range(n_long)] +
+        [random.choice(short) for _ in range(n_short)]
+    )
+    random.shuffle(contexts)   
+    return contexts
+
 async def mixed_context_sweep():
 
     print("\nRunning Mixed Context Sweep\n")
 
     rows = []
 
-    contexts = [1024, 2048, 4096, 8192, 16384]
-    MAX_MIXED_TOKENS=32
+    #contexts = [1024, 1024, 2048, 2048, 4096, 4096, 8192, 8192, 16384, 16384]
+    short_contexts = [128, 256, 512] * 10    # 30 short
+    long_contexts  = [4096, 8192] * 3        # 6 long
+    contexts = short_contexts + long_contexts
+    #generate_mixed_context_lengths()
+    #MAX_MIXED_TOKENS=128
 
     random.shuffle(contexts)
 
@@ -616,7 +640,7 @@ async def mixed_context_sweep():
         ),
     ) as client:
 
-        tasks = [send_request(client=client, context_length=ctx, max_new_tokens=MAX_MIXED_TOKENS)
+        tasks = [send_request(client=client, context_length=ctx)#, max_new_tokens=MAX_MIXED_TOKENS)
             for ctx in contexts]
 
         results = await asyncio.gather(
@@ -668,12 +692,16 @@ async def mixed_context_sweep():
     df = pd.DataFrame(rows)
 
     print(df)
+    print(MAX_NUM_BATCHED_TOKENS)
     USE_VLLM = 'vllm_'
     if not args.backend=='vllm':
         USE_VLLM = ''
     
     if ENABLED_CHUNKED_PREFILL=="--enable-chunked-prefill":
         USE_VLLM += 'chunkEN_'
+    
+    if MAX_NUM_BATCHED_TOKENS!="0":
+        USE_VLLM += str(MAX_NUM_BATCHED_TOKENS)+"_"
 
     df.to_csv(
         f"{args.output_csv}/{USE_VLLM}mixed_context_sweep.csv",
