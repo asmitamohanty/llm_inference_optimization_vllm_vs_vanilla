@@ -81,8 +81,8 @@ ENDPOINT=<EXTERNAL-IP> python benchmark.py --backend <backend-type> --dataset-ch
 | Metric| Results|
 |:------:|:-------:|
 |Latency| <img src="plots/context/context_latency_sec.png" width="200">|
-|TTFT| <img src="plots/context/context_tokens_per_sec.png" width="200">            |
-|Throughput| <img src="plots/context/context_ttft_sec.png" width="200">      |
+|Throughput| <img src="plots/context/context_tokens_per_sec.png" width="200">            |
+|TTFT| <img src="plots/context/context_ttft_sec.png" width="200">      |
 
 </details>
 
