@@ -1,10 +1,10 @@
-# LLM Inference Benchmark & Optimization: Vanilla Transformers vs vLLM on GKE
+# LLM Inference Benchmark & Optimization: Vanilla Transformer Serving vs vLLM on GKE
 
 [Blog](https://www.linkedin.com/posts/asmita-mohanty-38a81910a_for-months-i-have-been-scouting-inference-share-7480108344490229760-ouxX/?utm_source=share&utm_medium=member_desktop&rcm=ACoAABuHj9oB4uDVNVBFcgYMyBhriVcV4jdjva0)
 
 ## Overview
 
-This project benchmarks vanilla Hugging Face Transformers against vLLM on Google Kubernetes Engine (GKE) using NVIDIA GPU L4.The goal is to evaluate how modern inference optimizations such as 1)Continuous batching & 2)Chunked prefill affect latency and throughput under realistic workloads.
+This project benchmarks vanilla Hugging Face Transformers serving via FastAPI against vLLM on Google Kubernetes Engine (GKE) using NVIDIA GPU L4.The goal is to evaluate how modern inference optimizations such as 1)Continuous batching & 2)Chunked prefill affect latency and throughput under realistic workloads.
 
 The benchmark suite measures:
 
