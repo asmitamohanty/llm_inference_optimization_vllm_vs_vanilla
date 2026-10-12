@@ -147,8 +147,8 @@ ENDPOINT=<EXTERNAL-IP> python benchmark.py --backend <backend-type> --dataset-ch
 </details>
 
 ## Summary
-- vLLM outperforms vanilla transformer under high concurrent loads by roughly **11x** higher in throughput & **26x** lower in ITL, sacrificing some TTFT to protect ITL for in-flight requests.
-- For low concurrency, batch size=1 & varying context lengths, vLLM's **8%** decoding efficiency is eclipsed by **12-78%** scheduling overhead compared to vanilla transformer. This is expected from vLLM's architecture which is designed to benefit in maximum throughput at high concurrency.
+- vLLM outperforms vanilla transformer serving under high concurrent loads by roughly **11x** higher in throughput & **26x** lower in ITL, sacrificing some TTFT to protect ITL for in-flight requests.
+- For low concurrency, batch size=1 & varying context lengths, vLLM's **8%** decoding efficiency is eclipsed by **12-78%** scheduling overhead compared to vanilla transformer serving . This is expected from vLLM's architecture which is designed to benefit in maximum throughput at high concurrency.
 - Under mixed context loads for a given batch size:
   
   **(a) Sweeping chunk size (max-num-batched-tokens) with chunked prefill:** Higher chunk size shows improved performance in all the metrics due to reducing scheduling overhead/steps for larger contexts.
