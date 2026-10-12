@@ -6,12 +6,6 @@
 
 This project benchmarks vanilla Hugging Face Transformers serving via FastAPI against vLLM on Google Kubernetes Engine (GKE) using NVIDIA GPU L4.The goal is to evaluate how modern inference optimizations such as 1)Continuous batching & 2)Chunked prefill affect latency and throughput under realistic workloads.
 
-The benchmark suite measures:
-
-- `Context Sweep` – varying prompt length under low concurrency. 
-- `Request Sweep` – varying concurrent requests under high concurrency. 
-- `Mixed Context Sweep` – simultaneous heterogeneous prompt lengths comparing vLLM with vs without chunked prefill & the performance impact due to different token budget with chunked prefill
-
 ### Stack
 - Python
 - FastAPI
@@ -24,6 +18,12 @@ The benchmark suite measures:
 - Dataset - [HotPotQA](https://huggingface.co/datasets/hotpotqa/hotpot_qa/tree/main/distractor)
 
 ### Workflow
+The benchmark suite measures:
+
+- `Context Sweep` – varying prompt length under low concurrency. 
+- `Request Sweep` – varying concurrent requests under high concurrency. 
+- `Mixed Context Sweep` – simultaneous heterogeneous prompt lengths comparing vLLM with vs without chunked prefill & the performance impact due to different token budget with chunked prefill
+
 ```
         Prompt Builder
               │
@@ -40,7 +40,7 @@ The benchmark suite measures:
               ┌────────┴────────┐
               │                 │
               ▼                 ▼
-         FastAPI (Naive)       vLLM
+         FastAPI (Vanilla)     vLLM
               │                 │
               ▼                 ▼
          Responses + Metrics (/metrics)
