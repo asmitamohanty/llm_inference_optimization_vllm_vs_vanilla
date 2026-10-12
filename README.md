@@ -4,7 +4,7 @@
 
 ## Overview
 
-This project benchmarks vanilla Hugging Face Transformers serving via FastAPI against vLLM on Google Kubernetes Engine (GKE) using NVIDIA GPU L4.The goal is to evaluate how modern inference optimizations such as 1)Continuous batching & 2)Chunked prefill affect latency and throughput under realistic workloads.
+This project benchmarks vanilla Hugging Face Transformers serving via FastAPI against vLLM on Google Kubernetes Engine (GKE) using NVIDIA GPU L4.The goal is to evaluate how modern inference optimizations such as 1)Continuous batching & 2)Chunked prefill - affect latency and throughput under realistic workloads by observing the system-level metrics.
 
 ### Stack
 - Python
