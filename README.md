@@ -62,18 +62,20 @@ The benchmark suite measures:
 source scripts/env.sh
 bash scripts/setup.sh
 ```
-### Deployment - vLLM vs Vanilla Transformers
-- Create 2 separate containers - `vllm-server` vs `llm-inference`. Maintain & run separate deployment files respectively: `scripts/vllm_deployment.yaml` & `scripts/deployment.yaml`
-- For vLLM: set the `scripts/env.sh` to enable/disable `chunked-prefill` flag
-- For vanilla transformers: `BUILD -> DEPLOY`
+### Deployment - vLLM vs Vanilla Serving
+- Maintain separate deployment files: `scripts/vllm_deployment.yaml` & `scripts/deployment.yaml`
+- Create 2 separate containers - `vllm-server` vs `llm-inference`
+- For vanilla serving: `BUILD -> DEPLOY`. Creates container `llm-inference`
   ```
   bash scripts/build_cloud.sh
   bash scripts/deploy.sh
   ```
-- For vLLM: `DEPLOY` . We are using the [vLLM's docker image for NVIDIA GPU](https://docs.vllm.ai/en/stable/deployment/docker/)
+- For vLLM: Creates container `vllm-server`
+  - Set the `scripts/env.sh` to enable/disable `chunked-prefill` flag
+  - Only `DEPLOY`. We are using the [vLLM's docker image for NVIDIA GPU](https://docs.vllm.ai/en/stable/deployment/docker/)
   ```
   bash scripts/deploy.sh vllm
-  ```
+  ``` 
 - For simplicity - for each container, run the benchmark suite separately
 
 ### Run Benchmark
@@ -83,7 +85,6 @@ bash scripts/setup.sh
   - backend-type: `transformers` or `vllm`
   - benchmark-type: `context` or `request` or `mixed-context`
   - EXTERNAL-IP: Choose the address under the respective service - `llm-service` or `vllm-service`
-    
 ```
 ENDPOINT=<EXTERNAL-IP> python benchmark.py --backend <backend-type> --dataset-choice longbench --<benchmark-type>-sweep
 ```
