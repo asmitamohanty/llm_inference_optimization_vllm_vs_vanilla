@@ -23,6 +23,37 @@ The benchmark suite measures:
 - Matplotlib
 - Dataset - [HotPotQA](https://huggingface.co/datasets/hotpotqa/hotpot_qa/tree/main/distractor)
 
+### Workflow
+```
+        Prompt Builder
+              │
+              ▼
+        Benchmark Driver
+              │
+              ├── Context Sweep
+              ├── Request Sweep
+              └── Mixed Context Sweep
+                       │
+                       ▼
+              HTTP Requests (Concurrent)
+                       │
+              ┌────────┴────────┐
+              │                 │
+              ▼                 ▼
+         FastAPI (Naive)       vLLM
+              │                 │
+              ▼                 ▼
+         Responses + Metrics (/metrics)
+              │
+              ▼
+        CSV Logs
+              │
+              ▼
+        Plotting Scripts
+              │
+              ▼
+        Performance Comparison
+```
 ## Quickstart
 
 ### Pre-Requisites (For GKE)
@@ -32,8 +63,8 @@ source scripts/env.sh
 bash scripts/setup.sh
 ```
 ### Deployment - vLLM vs Vanilla Transformers
-- Create 2 separate containers - `vllm-server` vs `llm-inference`. Maintain separate deployment files - `scripts/vllm_deployment.yaml` & `scripts/deployment.yaml`
-- For vLLM - set the `scripts/env.sh` to enable/disable `chunked-prefill` flag
+- Create 2 separate containers - `vllm-server` vs `llm-inference`. Maintain & run separate deployment files respectively: `scripts/vllm_deployment.yaml` & `scripts/deployment.yaml`
+- For vLLM: set the `scripts/env.sh` to enable/disable `chunked-prefill` flag
 - For vanilla transformers: `BUILD -> DEPLOY`
   ```
   bash scripts/build_cloud.sh
@@ -43,7 +74,7 @@ bash scripts/setup.sh
   ```
   bash scripts/deploy.sh vllm
   ```
-- For each container, run the benchmark suite separately
+- For simplicity - for each container, run the benchmark suite separately
 
 ### Run Benchmark
 - Get your service endpoint once your pod is activated. Check `kubectl get pods -o wide`
