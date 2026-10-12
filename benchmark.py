@@ -313,56 +313,6 @@ def context_sweep():
         f"\nSaved: {args.output_csv}/{USE_VLLM}context_sweep.csv"
     )
 
-
-# --------------------------------------------------
-# Batch Size Sweep
-# --------------------------------------------------
-
-def batch_sweep():
-
-    BATCHES = [
-        1,
-        2,
-        4,
-        8
-    ]
-
-    rows = []
-
-    print("\nRunning Batch Sweep\n")
-
-    for batch in BATCHES:
-
-        print(f"Batch={batch}")
-
-        result = BACKEND_FN(
-            batch_size=batch,
-            context_length=512
-        )
-
-        rows.append({
-            "batch_size": batch,
-            "context_length": 512,
-            "latency_sec": result["latency_sec"],
-            "ttft_sec": result["ttft_sec"],
-            "tokens_per_sec": result["tokens_per_sec"],
-            "tokens_generated": result["tokens_generated"]
-        })
-
-    df = pd.DataFrame(rows)
-
-    print(df)
-
-    df.to_csv(
-        "./results/batch_sweep.csv",
-        index=False
-    )
-
-    print(
-        "\nSaved: batch_sweep.csv"
-    )
-
-
 # --------------------------------------------------
 # Number of Requests Sweep
 # --------------------------------------------------
@@ -509,10 +459,6 @@ async def run_vllm_request_async(
 
 async def send_request(context_length=DEFAULT_CTX_LEN, max_new_tokens=128,client=None):
 
-    # prompt = create_prompts(
-    #     batch_size=1,
-    #     context_length=context_length
-    # )
     print("Running: send_request for context length=", context_length)
     prompt_start_time = time.perf_counter()
     prompts = create_prompts(batch_size=1,context_length=context_length)
@@ -602,32 +548,15 @@ async def request_sweep():
         f"\nSaved: {args.output_csv}/{USE_VLLM}request_sweep.csv"
     )
 
-def generate_mixed_context_lengths(num_requests=25, long_ratio=0.2):
-    short = [128, 256, 512]
-    long  = [2048, 4096]    
- 
-    n_long  = max(1, int(num_requests * long_ratio))  # ~5 long requests
-    n_short = num_requests - n_long                    # ~20 short requests
-
-    contexts = (
-        [random.choice(long)  for _ in range(n_long)] +
-        [random.choice(short) for _ in range(n_short)]
-    )
-    random.shuffle(contexts)   
-    return contexts
-
 async def mixed_context_sweep():
 
     print("\nRunning Mixed Context Sweep\n")
 
     rows = []
 
-    #contexts = [1024, 1024, 2048, 2048, 4096, 4096, 8192, 8192, 16384, 16384]
     short_contexts = [128, 256, 512] * 10    # 30 short
     long_contexts  = [4096, 8192] * 3        # 6 long
     contexts = short_contexts + long_contexts
-    #generate_mixed_context_lengths()
-    #MAX_MIXED_TOKENS=128
 
     random.shuffle(contexts)
 
@@ -640,7 +569,7 @@ async def mixed_context_sweep():
         ),
     ) as client:
 
-        tasks = [send_request(client=client, context_length=ctx)#, max_new_tokens=MAX_MIXED_TOKENS)
+        tasks = [send_request(client=client, context_length=ctx)
             for ctx in contexts]
 
         results = await asyncio.gather(
